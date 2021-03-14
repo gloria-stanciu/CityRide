@@ -41,7 +41,7 @@ async function main(){
         await knex.raw('SELECT 1+1 AS RESULT')
         console.log("I'm here")
 
-        await app.listen(port, ()=>{
+        app.listen(port, ()=>{
             console.log(`Server started: http://localhost:${port}/`)
         })
       }catch(err){

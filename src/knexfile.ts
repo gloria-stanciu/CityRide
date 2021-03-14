@@ -3,7 +3,7 @@
 require('dotenv').config()
 // require('ts-node/register');
 
-const {knexSnakeCaseMappers} = require('objection')
+import {knexSnakeCaseMappers} from 'objection'
 module.exports = {
     client: 'postgresql',
     connection: {

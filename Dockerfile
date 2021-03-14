@@ -4,9 +4,7 @@ WORKDIR /app
 
 COPY ./ /app
 
-RUN npm install
-
-RUN npm run compile
+RUN npm install && npm run compile
 
 ENV HOST=0.0.0.0
 
