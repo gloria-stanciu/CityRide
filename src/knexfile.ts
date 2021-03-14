@@ -12,7 +12,7 @@ module.exports = {
     },
     migrations: {    
         tableName: 'knex_migrations',
-        directory: './src/migrations',
+        directory: './migrations',
         extension: 'ts'
     },
     ...knexSnakeCaseMappers()
