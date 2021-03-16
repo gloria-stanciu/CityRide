@@ -5,11 +5,8 @@ require('dotenv').config({ path: '../.env' })
 
 import {knexSnakeCaseMappers} from 'objection'
 export default {
-    client: 'postgresql',
-    connection: {
-        connectionString : process.env.DATABASE_URL,
-        ssl: {rejectUnauthorized: false},
-    },
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
     migrations: {    
         tableName: 'knex_migrations',
         directory: './migrations',
