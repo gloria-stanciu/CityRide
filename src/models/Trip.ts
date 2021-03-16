@@ -4,6 +4,7 @@ import Feed from './Feed'
 import Route from './Route'
 import Service from './Service'
 import Shape from './Shape'
+import StopTime from './StopTime'
 
 
 export default class Trip extends Model {
@@ -25,13 +26,23 @@ export default class Trip extends Model {
     route?:Route
     service?:Service
     shape?:Shape
+    stopTime?:StopTime
 
     static tableName='trips'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey() {
             return ['id', 'feedId']
-        }
+        },
+        routeForeignKey() {
+            return ['routeId', 'feedId']
+        },
+        serviceForeignKey() {
+            return ['serviceId', 'feedId']
+        },
+        shapeForeignKey() {
+            return ['shapeId', 'feedId']
+        },
     }
 
     //https://gtfs.org/reference/static/#tripstxt
@@ -69,8 +80,8 @@ export default class Trip extends Model {
             relation: Model.HasManyRelation,
             modelClass: Transfer,
             join: {
-                from: 'trips.id',
-                to: 'transfers.tripId'
+                from: ['trips.id', 'trips.feedId'],
+                to: ['transfers.tripId', 'transfers.feedId']
             }
         },
         feed: {
@@ -78,32 +89,40 @@ export default class Trip extends Model {
             modelClass: Feed,
             join:{
                 from: 'trips.feedId',
-                to: 'feed.id'
+                to: 'feeds.id'
             }
         },
         route: {
             relation: Model.BelongsToOneRelation,
             modelClass: Route,
             join:{
-                from: 'trips.routeId',
-                to: 'routes.id'
+                from: ['trips.routeId', 'trips.feedId'],
+                to: ['routes.id', 'routes.feedId']
             }
         },
         service: {
             relation: Model.BelongsToOneRelation,
             modelClass: Service,
             join:{
-                from: 'tripss.serviceId',
-                to: 'service.id'
+                from: ['trips.serviceId', 'trips.feedId'],
+                to: ['services.id', 'services.feedId']
             }
         },
         shape: {
             relation: Model.BelongsToOneRelation,
             modelClass: Shape,
             join:{
-                from: 'trips.shapeId',
-                to: 'shapes.id'
+                from: ['trips.shapeId', 'trips.feedId'],
+                to: ['shapes.id', 'shapes.feedId']
             }
         },
+        stopTime: {
+            relation: Model.HasManyRelation,
+            modelClass: StopTime,
+            join: {
+                from: ['trips.id', 'trips.feedId'],
+                to: ['stopTimes.tripId', 'stopTimes.feedId']
+            } 
+        }
     })
 }

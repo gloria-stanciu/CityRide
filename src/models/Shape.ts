@@ -5,7 +5,7 @@ import ShapePoint from './ShapePoint'
 
 
 
-export default class Shape extends Model {
+export default class Shapes extends Model {
     id!:string
     feedId!:string
 
@@ -16,7 +16,7 @@ export default class Shape extends Model {
     static tableName='shapes'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['id', 'feedId']
         }
     }
@@ -26,16 +26,16 @@ export default class Shape extends Model {
             relation: Model.HasManyRelation,
             modelClass: Trip,
             join: {
-                from: 'shapes.id',
-                to: 'trips.shapeId'
+                from: ['shapes.id', 'shapes.feedId'],
+                to: ['trips.shapeId', 'trips.feedId']
             }
         },
         shapePoint: {
             relation: Model.HasManyRelation,
             modelClass: ShapePoint,
             join:{
-                from: 'shapes.id',
-                to: 'shapePoints.shapeId'
+                from: ['shapes.id', 'shapes.feedId'],
+                to: ['shapePoints.shapeId', 'shapePoints.feedId']
             }
         },
         feed: {
@@ -43,7 +43,7 @@ export default class Shape extends Model {
             modelClass: Feed,
             join:{
                 from: 'shapes.feedId',
-                to: 'feed.id'
+                to: 'feeds.id'
             }
         }
     })

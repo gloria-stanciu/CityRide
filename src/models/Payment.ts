@@ -3,7 +3,7 @@ import User from './User'
 import Agency from './Agency'
 import Currency from './Currency'
 
-export default class Payment extends Model {
+export default class Payments extends Model {
     id!:number
     userId!:number
     agencyId!:string
@@ -18,8 +18,8 @@ export default class Payment extends Model {
     static tableName = 'payments'
 
     static modifiers: Modifiers = {
-        idColumn() {
-            return 'id'
+        agencyForeignKey() {
+            return ['agencyId', 'feedId']
         } 
     }
 
@@ -36,8 +36,8 @@ export default class Payment extends Model {
             relation: Model.BelongsToOneRelation,
             modelClass: Agency,
             join:{
-                from: 'payments.agencyId',
-                to: 'agency.id'
+                from: ['payments.agencyId', 'payments.feedId'],
+                to: ['agencies.id', 'agencies.feedId']
             }
         },
         currency: {
@@ -45,7 +45,7 @@ export default class Payment extends Model {
             modelClass: Currency,
             join:{
                 from: 'payments.currencyId',
-                to: 'currency.id'
+                to: 'currencies.id'
             }
         }
     })

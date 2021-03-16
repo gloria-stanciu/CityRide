@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!await knex.schema.hasTable('calendar_dates'))
         return await knex.schema.createTable('calendar_dates', (table) => {
             table.string('id').notNullable();
-            table.string('feed_id').notNullable().references('id').inTable('feed').onDelete('CASCADE').index();
+            table.string('feed_id').notNullable().references('id').inTable('feeds').onDelete('CASCADE').index();
             table.string('service_id');
             table.dateTime('date_time').notNullable();
             table.integer('exception_type').notNullable(); //enum 1 sau 2 https://gtfs.org/reference/static/#calendar_datestxt

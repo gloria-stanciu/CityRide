@@ -12,17 +12,26 @@ export default class Transfer extends Model {
     transferType:number|null
     minTransferTime:number|null
 
-    stop1?:Stop
-    stop2?:Stop
+    stopFrom?:Stop
+    stopTo?:Stop
     trip?:Trip
     feed?:Feed
 
     static tableName='transfers'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['trip_id', 'feed_id', 'from_stop_id']
-        }
+        },
+        tripForeignKey() {
+            return ['tripId', 'feedId']
+        },
+        fromStopForeignKey() {
+            return ['fromStopId', 'feedId']
+        },
+        toStopForeignKey() {
+            return ['toStopId', 'feedId']
+        },
     }
 
     // https://gtfs.org/reference/static/#transferstxt
@@ -44,21 +53,21 @@ export default class Transfer extends Model {
     }
 
     static relationMappings = () => ({
-        stop1: {
+        stopFrom: {
             relation: Model.BelongsToOneRelation,
             modelClass: Stop,
             join: {
-                from: 'transfers.fromStopId',
-                to: 'stops.id'
+                from: ['transfers.fromStopId', 'transfers.feedId'],
+                to: ['stops.id', 'stops.feedId']
             }
         },
-        stop2: {
+        stopTo: {
             relation: Model.BelongsToOneRelation,
             modelClass: Stop,
             join: 
                 {
-                    from: 'transfers.toStopId',
-                    to: 'stop.id'
+                    from: ['transfers.toStopId', 'transfers.feedId'],
+                    to: ['stops.id', 'stops.feedId']
                 },
         },
         trip: {
@@ -66,8 +75,8 @@ export default class Transfer extends Model {
             modelClass: Trip,
             join: 
                 {
-                    from: 'transfers.tripId',
-                    to: 'trips.id'
+                    from: ['transfers.tripId', 'transfers.feedId'],
+                    to: ['trips.id', 'trips.feedId']
                 },
         },
         feed: {
@@ -76,7 +85,7 @@ export default class Transfer extends Model {
             join: 
                 {
                     from: 'transfers.feedId',
-                    to: 'feed.id'
+                    to: 'feeds.id'
                 },
         }
     })

@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
             table.string('from_stop_id').notNullable();
             table.string('trip_id').notNullable()
             table.string('to_stop_id').notNullable();
-            table.string('feed_id').notNullable().references('id').inTable('feed').onDelete('CASCADE').index();
+            table.string('feed_id').notNullable().references('id').inTable('feeds').onDelete('CASCADE').index();
             table.integer('transfer_type'); //enum 0-3 https://gtfs.org/reference/static/#transferstxt
             table.integer('min_transfer_time');
             

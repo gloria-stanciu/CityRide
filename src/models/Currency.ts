@@ -1,4 +1,4 @@
-import { Model, Modifiers } from 'objection'
+import { Model } from 'objection'
 import Payment from './Payment'
 
 export default class Currency extends Model {
@@ -7,20 +7,14 @@ export default class Currency extends Model {
 
     payment?:Payment
 
-    static tableName='currency'
-
-    static modifiers: Modifiers = {
-        idColumn() {
-            return 'id'
-        } 
-    }
+    static tableName='currencies'
 
     static relationMappings = () => ({
         payment: {
             relation: Model.HasManyRelation,
             modelClass: Payment,
             join: {
-                from: 'currency.id',
+                from: 'currencies.id',
                 to: 'payments.userId'
             }
         }

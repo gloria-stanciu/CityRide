@@ -16,8 +16,11 @@ export default class CalendarDate extends Model {
     static tableName='calendarDates'
 
     static modifiers:Modifiers = {
-        idColumn(){
-            return ['id', 'feed_id']
+        idPrimaryKey(){
+            return ['id', 'feedId']
+        },
+        serviceForeignKey() {
+            return ['serviceId', 'feedId']
         }
     }
     
@@ -44,7 +47,7 @@ export default class CalendarDate extends Model {
             modelClass: Feed,
             join: {
                 from: 'calendarDates.feedId',
-                to: 'feed.id'
+                to: 'feeds.id'
             }
         },
         service: {
@@ -52,8 +55,8 @@ export default class CalendarDate extends Model {
             modelClass: Service,
             join: 
                 {
-                    from: 'calendarDates.serviceId',
-                    to: 'services.id'
+                    from: ['calendarDates.serviceId', 'calendarDates.feedId'],
+                    to: ['services.id', 'services.feedId']
                 },
         }
     })

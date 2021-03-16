@@ -21,12 +21,15 @@ export default class Calendar extends Model {
     feed?:Feed
     service?:Service
 
-    static tableName='calendar'
+    static tableName='calendars'
 
     static modifiers:Modifiers = {
-        idColumn() {
+        idPrimaryKey() {
             return ['id', 'feedId']
-        } 
+        },
+        serviceForeignKey() {
+            return ['serviceId', 'feedId']
+        }
     }   
 
     static relationMappings = () => ({
@@ -35,15 +38,15 @@ export default class Calendar extends Model {
             modelClass: Feed,
             join: {
                 from: 'calendars.feedId',
-                to: 'feed.id'
+                to: 'feeds.id'
             }
         },
         service: {
             relation: Model.BelongsToOneRelation,
             modelClass: Service,
             join: {
-                from: 'calendars.serviceId',
-                to: 'service.id'
+                from: ['calendars.serviceId', 'calendars.feedId'],
+                to: ['services.id', 'services.feedId']
             }
         }
     })

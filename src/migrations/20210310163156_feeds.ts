@@ -2,8 +2,8 @@ import * as Knex from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
-    if (!await knex.schema.hasTable('feed'))
-        return await knex.schema.createTable('feed', (table) => {
+    if (!await knex.schema.hasTable('feeds'))
+        return await knex.schema.createTable('feeds', (table) => {
             table.string('id').notNullable().primary();
             table.string('publisher_name');
             table.string('publisher_url');
@@ -16,5 +16,5 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return await knex.schema.dropTable('feed')
+    return await knex.schema.dropTable('feeds')
 }

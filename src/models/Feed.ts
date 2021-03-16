@@ -1,4 +1,4 @@
-import { Model, Modifiers } from 'objection'
+import { Model } from 'objection'
 import Agency from './Agency'
 import Route from './Route'
 import Trip from './Trip'
@@ -9,7 +9,7 @@ import StopTime from './StopTime'
 import Transfer from './Transfer'
 
 
-export default class Feed extends Model {
+export default class Feeds extends Model {
     id!:string
     publisherName:string|null
     publisherUrl:string|null
@@ -27,28 +27,22 @@ export default class Feed extends Model {
     stopTime?:StopTime
     transfer?:Transfer
 
-    static tableName='feed'
-
-    static modifiers:Modifiers = {
-        idColumn(){
-            return 'id'
-        }
-    }
+    static tableName='feeds'
 
     static relationMappings = () => ({
         agency: {
             relation: Model.HasManyRelation,
             modelClass: Agency,
             join: {
-                from: 'feed.id',
-                to: 'agency.feedId'
+                from: 'feeds.id',
+                to: 'agencies.feedId'
             }
         },
         route: {
             relation: Model.HasManyRelation,
             modelClass: Route,
             join: {
-                from: 'feed.id',
+                from: 'feeds.id',
                 to: 'routes.feedId'
             }
         },
@@ -56,7 +50,7 @@ export default class Feed extends Model {
             relation: Model.HasManyRelation,
             modelClass: Trip,
             join: {
-                from: 'feed.id',
+                from: 'feeds.id',
                 to: 'trips.feedId'
             }
         },
@@ -64,7 +58,7 @@ export default class Feed extends Model {
             relation: Model.HasManyRelation,
             modelClass: Shape,
             join: {
-                from: 'feed.id',
+                from: 'feeds.id',
                 to: 'shapes.feedId'
             }
         },
@@ -72,7 +66,7 @@ export default class Feed extends Model {
             relation: Model.HasManyRelation,
             modelClass: Stop,
             join: {
-                from: 'feed.id',
+                from: 'feeds.id',
                 to: 'stops.feedId'
             }
         },
@@ -80,15 +74,15 @@ export default class Feed extends Model {
             relation: Model.HasManyRelation,
             modelClass: Calendar,
             join: {
-                from: 'feed.id',
-                to: 'calendar.feedId'
+                from: 'feeds.id',
+                to: 'calendars.feedId'
             }
         },
         stopTime: {
             relation: Model.HasManyRelation,
             modelClass: StopTime,
             join: {
-                from: 'feed.id',
+                from: 'feeds.id',
                 to: 'stopTimes.feedId'
             }
         },
@@ -96,8 +90,8 @@ export default class Feed extends Model {
             relation: Model.HasManyRelation,
             modelClass: Transfer,
             join: {
-                from: 'feed.id',
-                to: 'transfer.feedId'
+                from: 'feeds.id',
+                to: 'transfers.feedId'
             }
         },
     })

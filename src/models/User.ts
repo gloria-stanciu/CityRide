@@ -14,12 +14,6 @@ export default class User extends Model {
 
     static tableName='users'
 
-    static modifiers: Modifiers = {
-        idColumn() {
-            return 'id'
-        } 
-    }
-
     static relationMappings = () => ({
         payment: {
             relation: Model.HasManyRelation,

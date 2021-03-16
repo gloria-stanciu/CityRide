@@ -16,7 +16,7 @@ export default class Service extends Model {
     static tableName='services'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['id', 'feedId']
         }
     }
@@ -26,32 +26,32 @@ export default class Service extends Model {
             relation: Model.HasManyRelation,
             modelClass: CalendarDate,
             join: {
-                from: 'service.id',
-                to: 'calendarDates.serviceId'
+                from: ['services.id', 'services.feedId'],
+                to: ['calendarDates.serviceId', 'calendarDates.feedId']
             }
         },
         trip: {
             relation: Model.HasManyRelation,
             modelClass: Trip,
             join:{
-                from: 'service.id',
-                to: 'trip.serviceId'
+                from: ['services.id', 'services.feedId'],
+                to: ['trips.serviceId', 'trips.feedId']
             }
         },
         calendar: {
             relation: Model.HasManyRelation,
             modelClass: Calendar,
             join:{
-                from: 'service.id',
-                to: 'calendar.serviceId'
+                from: ['services.id', 'services.feedId'],
+                to: ['calendars.serviceId', 'calendars.feedId']
             }
         },
         feed: {
             relation: Model.BelongsToOneRelation,
             modelClass: Feed,
             join:{
-                from: 'service.feedId',
-                to: 'feed.id'
+                from: 'services.feedId',
+                to: 'feeds.id'
             }
         }
     })

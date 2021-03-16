@@ -20,14 +20,14 @@ export default class Stop extends Model {
     wheelchairBoarding:number|null
 
     stopTime?:StopTime
-    transfer1?:Transfer
-    transfer2?:Transfer
+    transferFrom?:Transfer
+    transferTo?:Transfer
     feed?:Feed
 
     static tableName='stops'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['id', 'feed_id']
         }
     }
@@ -64,26 +64,26 @@ export default class Stop extends Model {
             relation: Model.HasManyRelation,
             modelClass: StopTime,
             join: {
-                from: 'stops.id',
-                to: 'stopTimes.stopId'
+                from: ['stops.id', 'stops.feedId'],
+                to: ['stopTimes.stopId', 'stopTimes.feedId']
             }
         },
-        transfer1: {
+        transferFrom: {
             relation: Model.HasManyRelation,
             modelClass: Transfer,
             join: 
                 {
-                    from: 'stops.id',
-                    to: 'transfers.fromStopId'
+                    from: ['stops.id', 'stops.feedId'],
+                    to: ['transfers.fromStopId', 'transfers.feedId']
                 },
         },
-        transfer2: {
+        transferTo: {
             relation: Model.HasManyRelation,
             modelClass: Transfer,
             join: 
                 {
-                    from: 'stops.id',
-                    to: 'transfers.toStopId'
+                    from: ['stops.id', 'stops.feedId'],
+                    to: ['transfers.toStopId', 'transfers.feedId']
                 },
         },
         feed: {

@@ -19,10 +19,10 @@ export default class Agency extends Model {
     payment?:Payment
     route?:Route
 
-    static tableName='agency'
+    static tableName='agencies'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['id', 'feedId']
         }
     }
@@ -32,24 +32,24 @@ export default class Agency extends Model {
             relation: Model.BelongsToOneRelation,
             modelClass: Feed,
             join: {
-                from: 'agency.feedId',
-                to: 'feed.id'
+                from: 'agencies.feedId',
+                to: 'feeds.id'
             }
         },
         payment: {
             relation: Model.HasManyRelation,
             modelClass: Payment,
             join:{
-                from: 'agency.id',
-                to: 'payments.agencyId'
+                from: ['agencies.id', 'agencies.feedId'],
+                to: ['payments.agencyId', 'payments.feedId']
             }
         },
         route: {
             relation: Model.HasManyRelation,
             modelClass: Route,
             join:{
-                from: 'agency.id',
-                to: 'routes.agencyId'
+                from: ['agencies.id', 'agencies.feedId'],
+                to: ['routes.agencyId', 'routes.feedId']
             }
         },
     })

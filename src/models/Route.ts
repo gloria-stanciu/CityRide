@@ -23,8 +23,14 @@ export default class Routes extends Model {
     static tableName='routes'
 
     static modifiers:Modifiers = {
-        idColumn(){
-            return ['id', 'feedId', 'agencyId']
+        idPrimaryKey(){
+            return ['id', 'agencyId', 'feedId']
+        },
+        idUniqueKey() {
+            return ['id', 'feedId']
+        },
+        agencyForeignKey() {
+            return  ['agencyId', 'feedId']
         }
     }
 
@@ -55,16 +61,16 @@ export default class Routes extends Model {
             relation: Model.HasManyRelation,
             modelClass: Trip,
             join: {
-                from: 'routes.id',
-                to: 'trips.routeId'
+                from: ['routes.id', 'routes.feedId'],
+                to: ['trips.routeId', 'trips.feedId']
             }
         },
         agency: {
             relation: Model.BelongsToOneRelation,
             modelClass: Agency,
             join:{
-                from: 'routes.agencyId',
-                to: 'agency.id'
+                from: ['routes.agencyId', 'routes.feedId'],
+                to: ['agencies.id', 'agencies.feedId']
             }
         },
         feed: {
@@ -72,7 +78,7 @@ export default class Routes extends Model {
             modelClass: Feed,
             join:{
                 from: 'routes.feedId',
-                to: 'feed.id'
+                to: 'feeds.id'
             }
         },
     })

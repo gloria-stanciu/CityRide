@@ -4,14 +4,12 @@ require('dotenv').config()
 import Knex from "knex";
 
 
-const bodyParser = require('body-parser');
-// const Knex = require('knex');
-const knexConfig = require('./knexfile')
-const {Model} = require('objection')
-const morgan = require('morgan')
-const helmet = require('helmet')
-const lumie = require('lumie')
-const path = require('path' )
+import knexConfig from './knexfile'
+import { Model } from 'objection'
+import morgan from 'morgan'
+import helmet from 'helmet'
+import lumie from 'lumie'
+import path from 'path';
 import express from 'express'
 
 
@@ -20,8 +18,6 @@ const knex = Knex(knexConfig);
 
 Model.knex(knex)
 
-app.use(bodyParser.urlencoded({extended:false}))
-app.use(bodyParser.json())
 app.use(morgan('combined'))
 app.use(helmet())
 

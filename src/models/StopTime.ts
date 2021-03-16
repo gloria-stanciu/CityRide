@@ -23,8 +23,14 @@ export default class StopTime extends Model {
     static tablename='stopTimes'
 
     static modifiers:Modifiers = {
-        idColumn(){
+        idPrimaryKey(){
             return ['trip_id', 'feed_id', 'stop_id']
+        },
+        tripForeignKey() {
+            return ['tripId', 'feedId']
+        },
+        stopForeignKey() {
+            return ['stopId', 'feedId']
         }
     }
 
@@ -62,8 +68,8 @@ export default class StopTime extends Model {
             relation: Model.BelongsToOneRelation,
             modelClass: Trip,
             join: {
-                from: 'stopTimes.tripId',
-                to: 'trips.id'
+                from: ['stopTimes.tripId', 'stopTimes.feedId'],
+                to: ['trips.id', 'trips.feedId']
             }
         },
         feed: {
@@ -72,7 +78,7 @@ export default class StopTime extends Model {
             join: 
                 {
                     from: 'stopTimes.feedId',
-                    to: 'feed.id'
+                    to: 'feeds.id'
                 },
         },
         stop: {
@@ -80,8 +86,8 @@ export default class StopTime extends Model {
             modelClass: Stop,
             join: 
                 {
-                    from: 'stopTimes.stopId',
-                    to: 'stops.id'
+                    from: ['stopTimes.stopId', 'stopTimes.feedId'],
+                    to: ['stops.id', 'stops.feedId']
                 },
         }
     })

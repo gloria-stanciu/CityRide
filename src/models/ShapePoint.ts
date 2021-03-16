@@ -12,11 +12,11 @@ export default class ShapePoint extends Model {
 
     shape?:Shape
 
-    static tableName='shapes'
+    static tableName='shapePoints'
 
     static modifiers:Modifiers = {
-        idColumn(){
-            return 'id'
+        shapeForeignKey() {
+            return ['shapeId', 'feedId']
         }
     }
 
@@ -25,8 +25,8 @@ export default class ShapePoint extends Model {
             relation: Model.BelongsToOneRelation,
             modelClass: Shape,
             join: {
-                from: 'shapePoints.shapeId',
-                to: 'shapes.id'
+                from: ['shapePoints.shapeId', 'shapePoints.feedId'],
+                to: ['shapes.id', 'shapes.feedId']
             }
         }
     })

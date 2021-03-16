@@ -1,10 +1,10 @@
 'use strict'
 
-require('dotenv').config()
+require('dotenv').config({ path: '../.env' })
 // require('ts-node/register');
 
 import {knexSnakeCaseMappers} from 'objection'
-module.exports = {
+export default {
     client: 'postgresql',
     connection: {
         connectionString : process.env.DATABASE_URL,

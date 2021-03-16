@@ -9,10 +9,10 @@ export async function up(knex: Knex): Promise<void> {
             table.string('agency_id').notNullable();
             table.string('feed_id').notNullable();
             table.float('fare').notNullable();
-            table.integer('currency_id').notNullable().references('id').inTable('currency').onDelete('CASCADE').index();
+            table.integer('currency_id').notNullable().references('id').inTable('currencies').onDelete('CASCADE').index();
             table.dateTime('date_time');
 
-            table.foreign(['agency_id', 'feed_id']).references(['id', 'feed_id']).inTable('agency').onDelete('CASCADE');
+            table.foreign(['agency_id', 'feed_id']).references(['id', 'feed_id']).inTable('agencies').onDelete('CASCADE');
         });
 }
 

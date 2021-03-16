@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!await knex.schema.hasTable('trips'))
         return await knex.schema.createTable('trips', (table) => {
             table.string('id').notNullable();
-            table.string('feed_id').notNullable().references('id').inTable('feed').onDelete('CASCADE').index();
+            table.string('feed_id').notNullable().references('id').inTable('feeds').onDelete('CASCADE').index();
             table.string('route_id');
             table.string('service_id');
             table.string('headsign');

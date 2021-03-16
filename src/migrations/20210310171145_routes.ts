@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!await knex.schema.hasTable('routes'))
         return await knex.schema.createTable('routes', (table) => {
             table.string('id').notNullable();
-            table.string('feed_id').notNullable().references('id').inTable('feed').onDelete('CASCADE').index();
+            table.string('feed_id').notNullable().references('id').inTable('feeds').onDelete('CASCADE').index();
             table.string('agency_id');
             table.string('short_name');
             table.string('long_name');
@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 
             table.primary(['id', 'agency_id', 'feed_id'], 'routes_primary_key');
             table.unique(['id', 'feed_id'], 'routes_unique_id');
-            table.foreign(['agency_id', 'feed_id']).references(['id', 'feed_id']).inTable('agency').onDelete('CASCADE');
+            table.foreign(['agency_id', 'feed_id']).references(['id', 'feed_id']).inTable('agencies').onDelete('CASCADE');
         });
 }
 
