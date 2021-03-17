@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    networks: 
+      - master
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/cityride
+      - NODE_ENV=production
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cityride
+    ports:
+      - "5432:5432"
+    networks: 
+      - master
+
+  adminer:
+    image: adminer:4.7
+    ports:
+      - 8080:8080
+    networks: 
+      - master
+    depends_on:
+      - db
+
+networks:
+  master:
