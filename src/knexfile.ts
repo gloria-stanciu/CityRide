@@ -10,11 +10,10 @@ var connString
 if (process.env.NODE_ENV === 'production') {
   connString = process.env.DATABASE_URL
 }
-console.log(process.env.DATABASE_URL)
 
 export default {
-  client: 'pg',
-  connection: {
+  client: 'postgres',
+  connection: connString || {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   },
