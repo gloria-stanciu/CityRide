@@ -5,17 +5,27 @@ require('dotenv').config({ path: '../.env' })
 
 import { knexSnakeCaseMappers } from 'objection'
 
-var connString
+var hostName = process.env.RDS_HOSTNAME
 
 if (process.env.NODE_ENV === 'production') {
-  connString = process.env.DATABASE_URL
+  // connString = process.env.DATABASE_URL
+  hostName = process.env.RDS_HOSTNAME
 }
 
 export default {
-  client: 'postgresql',
-  connection: connString || {
-    connectionString: process.env.DATABASE_URL,
+  client: 'pg',
+  connection: {
+    host: hostName,
+    user: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+    port: process.env.RDS_PORT,
+    dbname: process.env.RDS_DB_NAME,
     ssl: { rejectUnauthorized: false },
+    connectTimeout: 90000,
+  },
+  pool: {
+    min: 1,
+    max: 20,
   },
   migrations: {
     tableName: 'knex_migrations',
