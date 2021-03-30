@@ -98,3 +98,5 @@ async function main() {
 }
 
 main()
+
+// ?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require
