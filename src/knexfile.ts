@@ -5,7 +5,7 @@ require('dotenv').config({ path: '../.env' })
 
 import { knexSnakeCaseMappers } from 'objection'
 
-var hostName = process.env.RDS_HOSTNAME
+var hostName
 
 if (process.env.NODE_ENV === 'production') {
   // connString = process.env.DATABASE_URL
@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
 export default {
   client: 'pg',
   connection: {
-    host: hostName,
+    host: hostName || process.env.RDS_HOSTNAME,
     user: process.env.RDS_USERNAME,
     password: process.env.RDS_PASSWORD,
     port: process.env.RDS_PORT,
