@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const stop = await Stop.query()
       .whereComposite(['id', 'feedId'], [req.params.id, req.params.feedId])
       .first()
-    return res.status(200).send(stop)
+    if (stop === undefined) return res.status(404).send()
+    else return res.status(200).send(stop)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

@@ -5,7 +5,7 @@ import Feed from './Feed'
 
 export default class Transfer extends Model {
   fromStopId!: string
-  tripId!: string
+  tripId: string | null
   toStopId!: string
   feedId!: string
   transferType: number | null

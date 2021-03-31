@@ -18,7 +18,8 @@ async function getById(req: Request, res: Response) {
         [req.params.id, req.params.feedId, req.params.agencyId]
       )
       .first()
-    return res.status(200).send(route)
+    if (route === undefined) return res.status(404).send()
+    else return res.status(200).send(route)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

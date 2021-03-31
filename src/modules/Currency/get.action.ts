@@ -13,7 +13,8 @@ async function getAll(req: Request, res: Response) {
 async function getById(req: Request, res: Response) {
   try {
     const currency = await Currency.query().findById(req.params.id)
-    return res.status(200).send(currency)
+    if (currency === undefined) return res.status(404).send()
+    else return res.status(200).send(currency)
   } catch (err) {
     res.status(500).send(err)
   }

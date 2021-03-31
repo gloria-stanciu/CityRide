@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const shapePoint = await ShapePoint.query()
       .where('id', req.params.id)
       .first()
-    return res.status(200).send(shapePoint)
+    if (shapePoint === undefined) return res.status(404).send()
+    else return res.status(200).send(shapePoint)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

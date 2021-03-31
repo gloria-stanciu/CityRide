@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const trip = await Trip.query()
       .whereComposite(['id', 'feedId'], [req.params.id, req.params.feedId])
       .first()
-    return res.status(200).send(trip)
+    if (trip === undefined) return res.status(404).send()
+    else return res.status(200).send(trip)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

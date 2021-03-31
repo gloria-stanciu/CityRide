@@ -13,7 +13,8 @@ async function getAll(req: Request, res: Response) {
 async function getById(req: Request, res: Response) {
   try {
     const feed = await Feed.query().findById(req.params.id)
-    return res.status(200).send(feed)
+    if (feed === undefined) return res.status(404).send()
+    else return res.status(200).send(feed)
   } catch (err) {
     res.status(500).send(err)
   }

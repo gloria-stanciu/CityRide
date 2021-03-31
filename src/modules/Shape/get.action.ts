@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const shape = await Shape.query()
       .whereComposite(['id', 'feedId'], [req.params.id, req.params.feedId])
       .first()
-    return res.status(200).send(shape)
+    if (shape === undefined) return res.status(404).send()
+    else return res.status(200).send(shape)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)
