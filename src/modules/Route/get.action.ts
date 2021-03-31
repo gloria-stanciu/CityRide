@@ -18,7 +18,8 @@ async function getById(req: Request, res: Response) {
         [req.params.id, req.params.feedId, req.params.agencyId]
       )
       .first()
-    if (route === undefined) return res.status(404).send()
+    if (route === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(route)
   } catch (err) {
     console.log(err)

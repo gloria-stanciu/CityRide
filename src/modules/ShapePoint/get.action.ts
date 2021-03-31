@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const shapePoint = await ShapePoint.query()
       .where('id', req.params.id)
       .first()
-    if (shapePoint === undefined) return res.status(404).send()
+    if (shapePoint === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(shapePoint)
   } catch (err) {
     console.log(err)

@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const service = await Service.query()
       .whereComposite(['id', 'feedId'], [req.params.id, req.params.feedId])
       .first()
-    if (service === undefined) return res.status(404).send()
+    if (service === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(service)
   } catch (err) {
     console.log(err)

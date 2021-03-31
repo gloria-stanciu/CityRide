@@ -15,7 +15,8 @@ async function getById(req: Request, res: Response) {
     const calendar = await Calendar.query()
       .whereComposite(['id', 'feedId'], [req.params.id, req.params.feedId])
       .first()
-    if (calendar === undefined) return res.status(404).send()
+    if (calendar === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(calendar)
   } catch (err) {
     console.log(err)

@@ -19,7 +19,8 @@ async function getById(req: Request, res: Response) {
         [req.params.tripId, req.params.feedId, req.params.fromStopId]
       )
       .first()
-    if (transfer === undefined) return res.status(404).send()
+    if (transfer === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(transfer)
   } catch (err) {
     console.log(err)

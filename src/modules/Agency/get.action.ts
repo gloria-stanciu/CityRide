@@ -13,7 +13,8 @@ async function getAll(req: Request, res: Response) {
 async function getById(req: Request, res: Response) {
   try {
     const agency = await Agency.query().findById(req.params.id)
-    if (agency === undefined) return res.status(404).send()
+    if (agency === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(agency)
   } catch (err) {
     res.status(500).send(err)

@@ -18,7 +18,8 @@ async function getById(req: Request, res: Response) {
         [req.params.tripId, req.params.feedId, req.params.stopId]
       )
       .first()
-    if (stopTime === undefined) return res.status(404).send()
+    if (stopTime === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(stopTime)
   } catch (err) {
     console.log(err)

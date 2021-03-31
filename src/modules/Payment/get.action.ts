@@ -13,7 +13,8 @@ async function getAll(req: Request, res: Response) {
 async function getById(req: Request, res: Response) {
   try {
     const payment = await Payment.query().findById(req.params.id)
-    if (payment === undefined) return res.status(404).send()
+    if (payment === undefined)
+      return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(payment)
   } catch (err) {
     res.status(500).send(err)

@@ -1,43 +1,39 @@
+import * as fsp from 'fs/promises'
 import fs from 'fs'
 import path from 'path'
 import extract from 'extract-zip'
-import csv from 'csv-parse'
-import assert from 'assert'
+import csv from 'csv-parse/lib/sync'
+import got from 'got'
+import { addFeed, addAgency, addRoute, addShapePoints } from './filesAPIRequest'
+
 require('dotenv').config()
 
 function readCSV(file) {
   try {
-    csv(
-      file,
-      {
-        columns: true,
-        cast: function (value, context) {
-          if (value === '') {
-            return undefined
-          } else {
-            return value
-          }
-        },
+    const parsed = csv(file, {
+      columns: true,
+      cast: function (value, context) {
+        if (value === '') {
+          return null
+        } else {
+          return value
+        }
       },
-      function (err, records) {
-        console.log(records)
-        return records
-      }
-    )
+    })
+    return parsed
   } catch (err) {
-    console.log(err)
+    console.log(`readCSV error \n ${err}`)
   }
 }
 
 async function getParsedFile(unzipedFolder, filePath) {
   try {
-    // for (const [key, value] of Object.entries(dataset)) {
     let absolutePathFile = path.resolve(unzipedFolder, filePath)
-    const stringifiedFile = await fs.readFileSync(absolutePathFile)
-    const parsedFile = await readCSV(stringifiedFile)
-    // }
+    const stringifiedFile = await fsp.readFile(absolutePathFile)
+    // const parsedFile = readCSV(stringifiedFile)
+    return stringifiedFile
   } catch (err) {
-    console.log(err)
+    console.log(`getParsedFile error \n ${err}`)
   }
 }
 
@@ -51,11 +47,12 @@ async function extractZip(zipFile) {
     }
     return zipFile.split('.').slice(0, -1).join('.')
   } catch (err) {
-    console.log(err)
+    console.log(`Extract ZIP error \n ${err}`)
   }
 }
 
 async function main() {
+  // try {
   const unzipedFolder = await extractZip(
     `${process.env.ZIP_PATH}/timisoara.zip`
   )
@@ -94,7 +91,56 @@ async function main() {
     },
   }
 
-  await getParsedFile(unzipedFolder, dataset.agencies.path)
+  // const feed = {
+  //   id: 'id1',
+  //   publisherName: 'publisherName',
+  //   publisherUrl: 'publisherUrl',
+  //   lang: 'lang',
+  //   version: 'version',
+  //   startDate: '2020.01.01',
+  //   endDate: '2020.01.01',
+  // }
+  // await addFeed(`${process.env.URL_BACKEND_APP}/feeds`, feed)
+  try {
+    const agencyStringifiedFile = await getParsedFile(
+      unzipedFolder,
+      dataset.agencies.path
+    )
+    const agencyParsedFile = readCSV(agencyStringifiedFile)
+    await addAgency(agencyParsedFile, dataset.agencies.url, 'id1')
+  } catch (error) {
+    console.log(`Agency error\n ${error}`)
+  }
+
+  try {
+    const routeStringifiedFile = await getParsedFile(
+      unzipedFolder,
+      dataset.routes.path
+    )
+    const routeParsedFile = readCSV(routeStringifiedFile)
+    await addRoute(routeParsedFile, dataset.routes.url, 'id1')
+  } catch (error) {
+    console.log(`Route error\n ${error}`)
+  }
+
+  try {
+    const shapePointsStringifiedFile = await getParsedFile(
+      unzipedFolder,
+      dataset.shapePoints.path
+    )
+
+    const shapePointsParsedFile = readCSV(shapePointsStringifiedFile)
+
+    // console.time('Benchmark for adding routes and shape points')
+    await addShapePoints(shapePointsParsedFile, dataset.shapePoints.url)
+    // console.timeEnd('Benchmark for adding routes and shape points')
+  } catch (error) {
+    console.log(`Shape Point error\n ${error}`)
+  }
+  // }
+  // catch (err) {
+  //   console.log(err)
+  // }
 }
 
 main()
