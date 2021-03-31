@@ -17,12 +17,6 @@ export default {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   },
-
-  // host: hostName || process.env.RDS_HOSTNAME,
-  // user: process.env.RDS_USERNAME,
-  // password: process.env.RDS_PASSWORD,
-  // port: process.env.RDS_PORT,
-  // dbname: process.env.RDS_DB_NAME,
   migrations: {
     tableName: 'knex_migrations',
     directory: './migrations',

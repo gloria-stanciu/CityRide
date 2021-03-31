@@ -8,7 +8,7 @@ const routeRouter = Router()
 
 routeRouter.get('/', getAll)
 routeRouter.post('/', create)
-routeRouter.get('/:routeId/:agencyId/:feedId', getById)
+routeRouter.get('/:id/:agencyId/:feedId', getById)
 routeRouter.put('/:id/:agencyId/:feedId', update)
 routeRouter.delete('/:id/:agencyId/:feedId', remove)
 

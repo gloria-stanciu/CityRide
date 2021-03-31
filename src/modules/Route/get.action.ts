@@ -15,7 +15,7 @@ async function getById(req: Request, res: Response) {
     const route = await Route.query()
       .whereComposite(
         ['id', 'feedId', 'agencyId'],
-        [req.params.routeId, req.params.feedId, req.params.agencyId]
+        [req.params.id, req.params.feedId, req.params.agencyId]
       )
       .first()
     return res.status(200).send(route)
