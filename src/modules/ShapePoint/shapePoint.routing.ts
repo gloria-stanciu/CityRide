@@ -9,7 +9,7 @@ const shapePointRouter = Router()
 shapePointRouter.get('/', getAll)
 shapePointRouter.post('/', create)
 shapePointRouter.get('/:id', getById)
-shapePointRouter.get('/:lat/long', getByLatLong)
+shapePointRouter.get('/:lat/:long', getByLatLong)
 shapePointRouter.put('/:id', update)
 shapePointRouter.delete('/:id', remove)
 
