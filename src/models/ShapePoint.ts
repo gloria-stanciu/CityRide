@@ -2,8 +2,9 @@ import { Model, Modifiers } from 'objection'
 import Shape from './Shape'
 
 export default class ShapePoint extends Model {
-  id!: string
+  id: number | null
   shapeId: string | null
+  feedId: string | null
   lat!: string
   long!: string
   sequence!: string

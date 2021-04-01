@@ -4,8 +4,8 @@ import { ShapePoint } from '../../models/index'
 async function create(req: Request, res: Response) {
   try {
     await ShapePoint.query().insert({
-      id: req.body.id,
       shapeId: req.body.shapeId,
+      feedId: req.body.feedId,
       lat: req.body.lat,
       long: req.body.long,
       sequence: req.body.sequence,

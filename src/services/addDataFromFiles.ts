@@ -4,7 +4,14 @@ import path from 'path'
 import extract from 'extract-zip'
 import csv from 'csv-parse/lib/sync'
 import got from 'got'
-import { addFeed, addAgency, addRoute, addShapePoints } from './filesAPIRequest'
+import {
+  addFeed,
+  addAgency,
+  addRoute,
+  addShapePoints,
+  addShapes,
+} from './filesAPIRequest'
+import { Feed } from '../models'
 
 require('dotenv').config()
 
@@ -12,13 +19,14 @@ function readCSV(file) {
   try {
     const parsed = csv(file, {
       columns: true,
-      cast: function (value, context) {
-        if (value === '') {
-          return null
-        } else {
-          return value
-        }
-      },
+      skip_empty_lines: true,
+      // cast: function (value, context) {
+      //   if (value === '') {
+      //     return undefined
+      //   } else {
+      //     return value
+      //   }
+      // },
     })
     return parsed
   } catch (err) {
@@ -52,95 +60,93 @@ async function extractZip(zipFile) {
 }
 
 async function main() {
-  // try {
-  const unzipedFolder = await extractZip(
-    `${process.env.ZIP_PATH}/timisoara.zip`
-  )
-  const dataset = {
-    agencies: {
-      path: `${unzipedFolder}/agency.txt`,
-      url: `${process.env.URL_BACKEND_APP}/agencies`,
-    },
-    routes: {
-      path: `${unzipedFolder}/routes.txt`,
-      url: `${process.env.URL_BACKEND_APP}/routes`,
-    },
-    trips: {
-      path: `${unzipedFolder}/trips.txt`,
-      url: `${process.env.URL_BACKEND_APP}/trips`,
-    },
-    shapePoints: {
-      path: `${unzipedFolder}/shapes.txt`,
-      url: `${process.env.URL_BACKEND_APP}/shapePoints`,
-    },
-    calendarDates: {
-      path: `${unzipedFolder}/calendar_dates.txt`,
-      url: `${process.env.URL_BACKEND_APP}/calendarDates`,
-    },
-    stops: {
-      path: `${unzipedFolder}/stops.txt`,
-      url: `${process.env.URL_BACKEND_APP}/stops`,
-    },
-    stopTimes: {
-      path: `${unzipedFolder}/stop_times.txt`,
-      url: `${process.env.URL_BACKEND_APP}/stopTimes`,
-    },
-    transfers: {
-      path: `${unzipedFolder}/transfers.txt`,
-      url: `${process.env.URL_BACKEND_APP}/transfers`,
-    },
-  }
-
-  // const feed = {
-  //   id: 'id1',
-  //   publisherName: 'publisherName',
-  //   publisherUrl: 'publisherUrl',
-  //   lang: 'lang',
-  //   version: 'version',
-  //   startDate: '2020.01.01',
-  //   endDate: '2020.01.01',
-  // }
-  // await addFeed(`${process.env.URL_BACKEND_APP}/feeds`, feed)
   try {
+    const unzipedFolder = await extractZip(
+      `${process.env.ZIP_PATH}/timisoara.zip`
+    )
+    const dataset = {
+      agencies: {
+        path: `${unzipedFolder}/agency.txt`,
+        url: `${process.env.URL_BACKEND_APP}/agencies`,
+      },
+      routes: {
+        path: `${unzipedFolder}/routes.txt`,
+        url: `${process.env.URL_BACKEND_APP}/routes`,
+      },
+      trips: {
+        path: `${unzipedFolder}/trips.txt`,
+        url: `${process.env.URL_BACKEND_APP}/trips`,
+      },
+      shapes: {
+        path: `${unzipedFolder}/shapes.txt`,
+        url: `${process.env.URL_BACKEND_APP}/shapes`,
+      },
+      shapePoints: {
+        path: `${unzipedFolder}/shapes.txt`,
+        url: `${process.env.URL_BACKEND_APP}/shapePoints`,
+      },
+      calendarDates: {
+        path: `${unzipedFolder}/calendar_dates.txt`,
+        url: `${process.env.URL_BACKEND_APP}/calendarDates`,
+      },
+      stops: {
+        path: `${unzipedFolder}/stops.txt`,
+        url: `${process.env.URL_BACKEND_APP}/stops`,
+      },
+      stopTimes: {
+        path: `${unzipedFolder}/stop_times.txt`,
+        url: `${process.env.URL_BACKEND_APP}/stopTimes`,
+      },
+      transfers: {
+        path: `${unzipedFolder}/transfers.txt`,
+        url: `${process.env.URL_BACKEND_APP}/transfers`,
+      },
+    }
+
+    const feed = {
+      id: 'id1',
+      publisherName: 'publisherName',
+      publisherUrl: 'publisherUrl',
+      lang: 'lang',
+      version: 'version',
+      startDate: '2020.01.01',
+      endDate: '2020.01.01',
+    }
+    await addFeed(`${process.env.URL_BACKEND_APP}/feeds`, feed)
+
     const agencyStringifiedFile = await getParsedFile(
       unzipedFolder,
       dataset.agencies.path
     )
-    const agencyParsedFile = readCSV(agencyStringifiedFile)
-    await addAgency(agencyParsedFile, dataset.agencies.url, 'id1')
-  } catch (error) {
-    console.log(`Agency error\n ${error}`)
-  }
-
-  try {
     const routeStringifiedFile = await getParsedFile(
       unzipedFolder,
       dataset.routes.path
     )
-    const routeParsedFile = readCSV(routeStringifiedFile)
-    await addRoute(routeParsedFile, dataset.routes.url, 'id1')
-  } catch (error) {
-    console.log(`Route error\n ${error}`)
-  }
-
-  try {
     const shapePointsStringifiedFile = await getParsedFile(
       unzipedFolder,
       dataset.shapePoints.path
     )
 
+    const agencyParsedFile = readCSV(agencyStringifiedFile)
+
+    const routeParsedFile = readCSV(routeStringifiedFile)
+
     const shapePointsParsedFile = readCSV(shapePointsStringifiedFile)
 
-    // console.time('Benchmark for adding routes and shape points')
+    await addAgency(agencyParsedFile, dataset.agencies.url, feed.id)
+
+    await addRoute(routeParsedFile, dataset.routes.url, feed.id)
+
+    await addShapes(shapePointsParsedFile, dataset.shapes.url, feed.id)
+
+    console.time('Benchmark for adding routes and shape points')
+
     await addShapePoints(shapePointsParsedFile, dataset.shapePoints.url)
-    // console.timeEnd('Benchmark for adding routes and shape points')
-  } catch (error) {
-    console.log(`Shape Point error\n ${error}`)
+
+    console.timeEnd('Benchmark for adding routes and shape points')
+  } catch (err) {
+    console.log(err)
   }
-  // }
-  // catch (err) {
-  //   console.log(err)
-  // }
 }
 
 main()

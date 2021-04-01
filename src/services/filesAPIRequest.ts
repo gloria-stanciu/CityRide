@@ -1,160 +1,129 @@
-import got from 'got'
+import { json } from 'express'
+import got, { GotReturn } from 'got'
 import { Agency, Feed, Routes, ShapePoints } from './interfaces'
 
 async function addFeed(url, feed: Feed) {
+  const feedData = {
+    id: feed.id,
+    publisherName: feed.publisherName,
+    publisherUrl: feed.publisherUrl,
+    lang: feed.lang,
+    version: feed.version,
+    startDate: feed.startDate,
+    endDate: feed.endDate,
+  }
   try {
-    const feedExists = await got.get(`${url}/${feed.id}`)
-    if (feedExists != undefined) {
-      await got.put(`${url}/${feed.id}`, {
-        json: {
-          id: feed.id,
-          publisherName: feed.publisherName,
-          publisherUrl: feed.publisherUrl,
-          lang: feed.lang,
-          version: feed.version,
-          startDate: feed.startDate,
-          endDate: feed.endDate,
-        },
+    await got.get(`${url}/${feed.id}`)
+    await got.put(`${url}/${feed.id}`, {
+      json: feedData,
+    })
+  } catch (err) {
+    await got.post(url, {
+      json: feedData,
+      responseType: 'json',
+    })
+    await got.get(`${url}/${feed.id}`)
+  }
+}
+
+async function addAgency(parsedFile: Agency[], url, feedId) {
+  for (const obj of parsedFile) {
+    const agencyData = {
+      id: obj.agency_id,
+      feedId: feedId,
+      name: obj.agency_name,
+      url: obj.agency_url,
+      timezone: obj.agency_timezone,
+      lang: obj.agency_lang,
+      phone: obj.agency_phone,
+      fareUrl: obj.agency_fare_url,
+      email: obj.agency_email,
+    }
+    try {
+      await got.get(`${url}/${obj.agency_id}`)
+      await got.put(`${url}/${obj.agency_id}`, {
+        json: agencyData,
       })
-    } else {
+    } catch (err) {
+      console.log(obj)
       await got.post(url, {
-        json: {
-          id: feed.id,
-          publisherName: feed.publisherName,
-          publisherUrl: feed.publisherUrl,
-          lang: feed.lang,
-          version: feed.version,
-          startDate: feed.startDate,
-          endDate: feed.endDate,
-        },
-        responseType: 'json',
+        json: agencyData,
       })
     }
-    await got.get(`${url}/${feed.id}`)
-  } catch (err) {
-    console.log(`addFeed \n ${err}`)
   }
 }
 
-async function addAgency(parsedFile, url, feedId) {
-  try {
-    parsedFile.forEach(async (obj: Agency) => {
-      const agencyExists = await got.get(`${url}/${obj.agency_id}`)
-      if (agencyExists != undefined) {
-        await got.put(`${url}/${obj.agency_id}`, {
-          json: {
-            id: obj.agency_id,
-            feedId: feedId,
-            name: obj.agency_name,
-            url: obj.agency_url,
-            timezone: obj.agency_timezone,
-            lang: obj.agency_lang,
-            phone: obj.agency_phone,
-            fareUrl: obj.agency_fare_url,
-            email: obj.agency_email,
-          },
-        })
-      } else {
-        await got.post(url, {
-          json: {
-            id: obj.agency_id,
-            feedId: feedId,
-            name: obj.agency_name,
-            url: obj.agency_url,
-            timezone: obj.agency_timezone,
-            lang: obj.agency_lang,
-            phone: obj.agency_phone,
-            fareUrl: obj.agency_fare_url,
-            email: obj.agency_email,
-          },
-          responseType: 'json',
-        })
-      }
-    })
-  } catch (err) {
-    console.log(`add agency \n ${err}`)
+async function addRoute(parsedFile: Routes[], url, feedId) {
+  for (const obj of parsedFile) {
+    const routeData = {
+      id: obj.route_id,
+      feedId: feedId,
+      agencyId: obj.agency_id,
+      shortName: obj.route_short_name,
+      longName: obj.route_long_name,
+      desc: obj.route_desc,
+      type: parseInt(obj.route_type),
+      url: obj.route_url,
+      color: obj.route_color,
+      textColor: obj.route_text_color,
+    }
+    try {
+      obj.route_type = parseInt(obj.route_type)
+      await got.get(`${url}/${obj.route_id}/${obj.agency_id}/${feedId}`)
+      await got.put(`${url}/${obj.route_id}/${obj.agency_id}/${feedId}`, {
+        json: routeData,
+      })
+    } catch (err) {
+      console.log(obj)
+      await got.post(url, {
+        json: routeData,
+      })
+    }
   }
 }
 
-async function addRoute(parsedFile, url, feedId) {
-  try {
-    parsedFile.forEach(async (obj: Routes) => {
-      const routeExists = await got.get(
-        `${url}/${obj.route_id}/${obj.agency_id}/${feedId}`
-      )
-      console.log('asta merge')
-      if (routeExists != undefined) {
-        console.log(routeExists.body)
-        await got.put(`${url}/${obj.route_id}/${obj.agency_id}/${feedId}`, {
-          json: {
-            id: obj.route_id,
-            feedId: feedId,
-            agencyId: obj.agency_id,
-            shortName: obj.route_short_name,
-            longName: obj.route_long_name,
-            desc: obj.route_desc,
-            type: obj.route_type,
-            url: obj.route_url,
-            color: obj.route_color,
-            textColor: obj.route_text_color,
-          },
-        })
-      } else {
-        console.log('eu trebuie sa ma vad')
-        await got.post(url, {
-          json: {
-            id: obj.route_id,
-            feedId: feedId,
-            agencyId: obj.agency_id,
-            shortName: obj.route_short_name,
-            longName: obj.route_long_name,
-            desc: obj.route_desc,
-            type: obj.route_type,
-            url: obj.route_url,
-            color: obj.route_color,
-            textColor: obj.route_text_color,
-          },
-          responseType: 'json',
-        })
-      }
-      console.log('final fara erori')
-    })
-  } catch (err) {
-    console.log(`addRoute \n ${err}`)
+async function addShapes(parsedFile: ShapePoints[], url, feedId) {
+  for (const obj of parsedFile) {
+    const shapeData = {
+      id: obj.shape_id,
+      feedId: feedId,
+    }
+    try {
+      await got.get(`${url}/${obj.shape_id}/${feedId}`)
+
+      await got.put(`${url}/${obj.shape_id}/${feedId}`, {
+        json: shapeData,
+      })
+    } catch (obj) {
+      console.log(obj)
+      await got.post(url, {
+        json: shapeData,
+      })
+    }
   }
 }
 
-async function addShapePoints(parsedFile, url) {
-  try {
-    parsedFile.forEach(async (obj: ShapePoints) => {
-      const shapePointExists = await got.get(`${url}/${obj.shape_id}`)
-      if (shapePointExists != undefined) {
-        await got.put(`${url}/${obj.shape_id}`, {
-          json: {
-            id: obj.shape_id,
-            shapeId: null,
-            lat: obj.shape_pt_lat,
-            long: obj.shape_pt_lon,
-            sequence: obj.shape_pt_sequence,
-            shapeDistTraveled: obj.shape_dist_traveled,
-          },
-        })
-      } else {
-        await got.post(url, {
-          json: {
-            id: obj.shape_id,
-            shapeId: null,
-            lat: obj.shape_pt_lat,
-            long: obj.shape_pt_lon,
-            sequence: obj.shape_pt_sequence,
-            shapeDistTraveled: obj.shape_dist_traveled,
-          },
-          responseType: 'json',
-        })
-      }
-    })
-  } catch (err) {
-    console.log(`addShapePoints \n ${err}`)
+async function addShapePoints(parsedFile: ShapePoints[], url) {
+  for (const obj of parsedFile) {
+    const shapePointData = {
+      // id: obj.shape_id,
+      shapeId: obj.shape_id,
+      lat: obj.shape_pt_lat,
+      long: obj.shape_pt_lon,
+      sequence: obj.shape_pt_sequence,
+      shapeDistTraveled: obj.shape_dist_traveled,
+    }
+    try {
+      await got.get(`${url}/${obj.shape_id}`)
+
+      await got.put(`${url}/${obj.shape_id}`, {
+        json: shapePointData,
+      })
+    } catch (obj) {
+      await got.post(url, {
+        json: shapePointData,
+      })
+    }
   }
 }
-export { addFeed, addAgency, addRoute, addShapePoints }
+export { addFeed, addAgency, addRoute, addShapes, addShapePoints }

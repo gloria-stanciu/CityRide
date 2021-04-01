@@ -3,7 +3,7 @@ import * as Knex from 'knex'
 export async function up(knex: Knex): Promise<void> {
   if (!(await knex.schema.hasTable('shape_points')))
     return await knex.schema.createTable('shape_points', (table) => {
-      table.string('id').notNullable().primary()
+      table.increments('id')
       table.string('shape_id')
       table.string('feed_id')
       table.string('lat').notNullable()

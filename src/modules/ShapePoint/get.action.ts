@@ -24,4 +24,18 @@ async function getById(req: Request, res: Response) {
   }
 }
 
-export { getAll, getById }
+async function getByLatLong(req: Request, res: Response) {
+  try {
+    const shapePoint = await ShapePoint.query()
+      .whereComposite(['lat', 'long'], [req.params.lat, req.params.long])
+      .first()
+    if (shapePoint === undefined)
+      return res.status(404).send({ message: 'Row not found' })
+    else return res.status(200).send(shapePoint)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send(err)
+  }
+}
+
+export { getAll, getById, getByLatLong }
