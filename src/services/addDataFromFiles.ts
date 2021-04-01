@@ -104,7 +104,7 @@ async function main() {
     }
 
     const feed = {
-      id: 'id1',
+      id: 'feed1',
       publisherName: 'publisherName',
       publisherUrl: 'publisherUrl',
       lang: 'lang',
@@ -141,7 +141,11 @@ async function main() {
 
     console.time('Benchmark for adding routes and shape points')
 
-    await addShapePoints(shapePointsParsedFile, dataset.shapePoints.url)
+    await addShapePoints(
+      shapePointsParsedFile,
+      dataset.shapePoints.url,
+      feed.id
+    )
 
     console.timeEnd('Benchmark for adding routes and shape points')
   } catch (err) {

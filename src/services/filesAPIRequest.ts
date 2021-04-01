@@ -3,7 +3,7 @@ import got, { GotReturn } from 'got'
 import { Agency, Feed, Routes, ShapePoints } from './interfaces'
 
 async function addFeed(url, feed: Feed) {
-  const feedData = {
+  const feedData: Feed = {
     id: feed.id,
     publisherName: feed.publisherName,
     publisherUrl: feed.publisherUrl,
@@ -19,7 +19,7 @@ async function addFeed(url, feed: Feed) {
     })
   } catch (err) {
     await got.post(url, {
-      json: feedData,
+      json: { feedData },
       responseType: 'json',
     })
     await got.get(`${url}/${feed.id}`)
@@ -94,7 +94,7 @@ async function addShapes(parsedFile: ShapePoints[], url, feedId) {
       await got.put(`${url}/${obj.shape_id}/${feedId}`, {
         json: shapeData,
       })
-    } catch (obj) {
+    } catch (err) {
       console.log(obj)
       await got.post(url, {
         json: shapeData,
@@ -103,23 +103,23 @@ async function addShapes(parsedFile: ShapePoints[], url, feedId) {
   }
 }
 
-async function addShapePoints(parsedFile: ShapePoints[], url) {
+async function addShapePoints(parsedFile: ShapePoints[], url, feedId) {
   for (const obj of parsedFile) {
     const shapePointData = {
-      // id: obj.shape_id,
       shapeId: obj.shape_id,
+      feedId: feedId,
       lat: obj.shape_pt_lat,
       long: obj.shape_pt_lon,
       sequence: obj.shape_pt_sequence,
       shapeDistTraveled: obj.shape_dist_traveled,
     }
     try {
-      await got.get(`${url}/${obj.shape_id}`)
+      await got.get(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`)
 
-      await got.put(`${url}/${obj.shape_id}`, {
+      await got.put(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`, {
         json: shapePointData,
       })
-    } catch (obj) {
+    } catch (err) {
       await got.post(url, {
         json: shapePointData,
       })

@@ -10,7 +10,7 @@ shapePointRouter.get('/', getAll)
 shapePointRouter.post('/', create)
 shapePointRouter.get('/:id', getById)
 shapePointRouter.get('/:lat/:long', getByLatLong)
-shapePointRouter.put('/:id', update)
+shapePointRouter.put('/:lat/:long', update)
 shapePointRouter.delete('/:id', remove)
 
 export default shapePointRouter
