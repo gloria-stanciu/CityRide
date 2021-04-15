@@ -1,7 +1,7 @@
 import create from './post.action'
 import { getAll, getById, getByLatLong } from './get.action'
 import update from './put.action'
-import remove from './delete.action'
+import { remove, removeAll } from './delete.action'
 
 import { Router } from 'express'
 const shapePointRouter = Router()

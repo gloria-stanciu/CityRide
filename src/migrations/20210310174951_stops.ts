@@ -20,7 +20,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('stop_url')
       table.integer('location_type') //enum 0 sau 4 https://gtfs.org/reference/static/#stop_timestxt
       table.string('parent_station')
-      table.dateTime('stop_timezone')
+      table.string('stop_timezone')
       table.integer('wheelchair_boarding') //enum 0-2
 
       table.primary(['id', 'feed_id'], 'stops_primary_key')

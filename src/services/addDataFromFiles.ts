@@ -137,7 +137,7 @@ async function main() {
 
     await addRoute(routeParsedFile, dataset.routes.url, feed.id)
 
-    await addShapes(shapePointsParsedFile, dataset.shapes.url, feed.id)
+    // await addShapes(shapePointsParsedFile, dataset.shapes.url, feed.id)
 
     console.time('Benchmark for adding routes and shape points')
 

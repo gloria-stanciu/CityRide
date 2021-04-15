@@ -1,8 +1,8 @@
 import * as Knex from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
-  knex.schema.alterTable('stops', function (table) {
-    table.string('stop_timezone').alter()
+  knex.schema.alterTable('shape_points', function (table) {
+    table.increments('id').alter()
   })
 }
 

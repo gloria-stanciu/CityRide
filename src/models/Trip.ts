@@ -20,7 +20,6 @@ export default class Trip extends Model {
   bikesAllowed: number | null
   isVisible: boolean
 
-  transfer?: Transfer
   feed?: Feed
   route?: Route
   service?: Service
@@ -75,14 +74,6 @@ export default class Trip extends Model {
   }
 
   static relationMappings = () => ({
-    transfer: {
-      relation: Model.HasManyRelation,
-      modelClass: Transfer,
-      join: {
-        from: ['trips.id', 'trips.feedId'],
-        to: ['transfers.tripId', 'transfers.feedId'],
-      },
-    },
     feed: {
       relation: Model.BelongsToOneRelation,
       modelClass: Feed,

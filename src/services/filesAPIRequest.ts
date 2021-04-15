@@ -114,13 +114,12 @@ async function addShapePoints(parsedFile: ShapePoints[], url, feedId) {
       shapeDistTraveled: obj.shape_dist_traveled,
     }
     try {
-      await got.get(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`)
-
-      await got.put(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`, {
+      // await got.get(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`)
+      await got.post(url, {
         json: shapePointData,
       })
     } catch (err) {
-      await got.post(url, {
+      await got.put(`${url}/${obj.shape_pt_lat}/${obj.shape_pt_lon}`, {
         json: shapePointData,
       })
     }

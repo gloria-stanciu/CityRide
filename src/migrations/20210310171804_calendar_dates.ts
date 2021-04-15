@@ -1,9 +1,10 @@
 import * as Knex from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
+  await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
   if (!(await knex.schema.hasTable('calendar_dates')))
     return await knex.schema.createTable('calendar_dates', (table) => {
-      table.string('id').notNullable()
+      table.uuid('id').defaultTo(knex.raw('uuid_generate_v4()'))
       table
         .string('feed_id')
         .notNullable()

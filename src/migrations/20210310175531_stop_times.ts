@@ -11,10 +11,10 @@ export async function up(knex: Knex): Promise<void> {
         .inTable('feeds')
         .onDelete('CASCADE')
         .index()
-      table.dateTime('arrival_time')
-      table.dateTime('departure_time')
-      table.string('stop_id').notNullable()
-      table.integer('stop_sequence').notNullable()
+      table.string('arrival_time')
+      table.string('departure_time')
+      table.string('stop_id')
+      table.integer('stop_sequence')
       table.string('stop_headsign')
       table.integer('pickup_type') //enum 0-3 https://gtfs.org/reference/static/#stop_timestxt
       table.integer('dropoff_type') //enum 0-3 https://gtfs.org/reference/static/#stop_timestxt

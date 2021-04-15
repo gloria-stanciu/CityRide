@@ -5,7 +5,6 @@ import Feed from './Feed'
 
 export default class Transfer extends Model {
   fromStopId!: string
-  tripId: string | null
   toStopId!: string
   feedId!: string
   transferType: number | null
@@ -13,21 +12,17 @@ export default class Transfer extends Model {
 
   stopFrom?: Stop
   stopTo?: Stop
-  trip?: Trip
   feed?: Feed
 
   static tableName = 'transfers'
 
   static get idColumn() {
-    return ['tripId', 'feedId', 'fromStopId']
+    return ['feedId', 'toStopId', 'fromStopId']
   }
 
   static modifiers: Modifiers = {
     idPrimaryKey() {
-      return ['tripId', 'feedId', 'fromStopId']
-    },
-    tripForeignKey() {
-      return ['tripId', 'feedId']
+      return ['feedId', 'toStopId', 'fromStopId']
     },
     fromStopForeignKey() {
       return ['fromStopId', 'feedId']
@@ -44,7 +39,6 @@ export default class Transfer extends Model {
 
     properties: {
       fromStopId: { type: 'string' },
-      tripId: { type: 'string' },
       toStopId: { type: 'string' },
       feedId: { type: 'string' },
       transferType: {
@@ -70,14 +64,6 @@ export default class Transfer extends Model {
       join: {
         from: ['transfers.toStopId', 'transfers.feedId'],
         to: ['stops.id', 'stops.feedId'],
-      },
-    },
-    trip: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: Trip,
-      join: {
-        from: ['transfers.tripId', 'transfers.feedId'],
-        to: ['trips.id', 'trips.feedId'],
       },
     },
     feed: {
