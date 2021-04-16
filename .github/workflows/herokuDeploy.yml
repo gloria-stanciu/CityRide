@@ -18,3 +18,4 @@ jobs:
           heroku_app_name: cityride
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           usedocker: true
+          dontuseforce: true
