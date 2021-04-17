@@ -5,7 +5,6 @@ async function create(req: Request, res: Response) {
   try {
     await Transfer.query().insert({
       fromStopId: req.body.fromStopId,
-      tripId: req.body.tripId,
       toStopId: req.body.toStopId,
       feedId: req.body.feedId,
       transferType: req.body.transferType,
