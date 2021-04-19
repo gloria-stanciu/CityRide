@@ -15,8 +15,8 @@ async function getById(req: Request, res: Response) {
     console.log(req.params)
     const transfer = await Transfer.query()
       .whereComposite(
-        ['tripId', 'feedId', 'fromStopId'],
-        [req.params.tripId, req.params.feedId, req.params.fromStopId]
+        ['feedId', 'toStopId', 'fromStopId'],
+        [req.params.feedId, req.params.toStopId, req.params.fromStopId]
       )
       .first()
     if (transfer === undefined)

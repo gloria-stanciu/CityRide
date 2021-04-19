@@ -8,7 +8,7 @@ const transferRouter = Router()
 
 transferRouter.get('/', getAll)
 transferRouter.post('/', create)
-transferRouter.get('/:tripId/:feedId/:fromStopId', getById)
+transferRouter.get('/:feedId/:toStopId/:fromStopId', getById)
 transferRouter.put('/:tripId/:feedId/:fromStopId', update)
 transferRouter.delete('/:tripId/:feedId/:fromStopId', remove)
 
