@@ -47,7 +47,7 @@ async function getByShapeId(req: Request, res: Response) {
       return Object.keys(point)
         .sort()
         .map(function (key) {
-          return point[key]
+          return parseFloat(point[key])
         })
     })
     if (shapePoints === undefined)
