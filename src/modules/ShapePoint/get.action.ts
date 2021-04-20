@@ -40,13 +40,19 @@ async function getByLatLong(req: Request, res: Response) {
 
 async function getByShapeId(req: Request, res: Response) {
   try {
-    const shapePoint = await ShapePoint.query().where(
-      'shapeId',
-      req.params.shapeId
-    )
-    if (shapePoint === undefined)
+    const shapePoints = await ShapePoint.query()
+      .where('shapeId', req.params.shapeId)
+      .select('lat', 'long')
+    const output = shapePoints.map(function (point) {
+      return Object.keys(point)
+        .sort()
+        .map(function (key) {
+          return point[key]
+        })
+    })
+    if (shapePoints === undefined)
       return res.status(404).send({ message: 'Row not found' })
-    else return res.status(200).send(shapePoint)
+    else return res.status(200).send(output)
   } catch (err) {
     console.log(err)
     res.status(500).send(err)
