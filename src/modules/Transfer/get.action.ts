@@ -28,4 +28,18 @@ async function getById(req: Request, res: Response) {
   }
 }
 
-export { getAll, getById }
+async function getFromStopId(req: Request, res: Response) {
+  try {
+    const transfer = await Transfer.query()
+      .where('feedId', req.params.feedId)
+      .andWhere('fromStopId', req.params.fromStopId)
+    if (transfer === undefined)
+      return res.status(404).send({ message: 'Rows not found' })
+    else return res.status(200).send(transfer)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send(err.message)
+  }
+}
+
+export { getAll, getById, getFromStopId }

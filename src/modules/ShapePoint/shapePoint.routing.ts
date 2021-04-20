@@ -1,5 +1,5 @@
 import create from './post.action'
-import { getAll, getById, getByLatLong } from './get.action'
+import { getAll, getById, getByLatLong, getByShapeId } from './get.action'
 import update from './put.action'
 import { remove, removeAll } from './delete.action'
 
@@ -8,8 +8,9 @@ const shapePointRouter = Router()
 
 shapePointRouter.get('/', getAll)
 shapePointRouter.post('/', create)
-shapePointRouter.get('/:id', getById)
+// shapePointRouter.get('/:id', getById)
 shapePointRouter.get('/:lat/:long', getByLatLong)
+shapePointRouter.get('/:shapeId', getByShapeId)
 shapePointRouter.put('/:lat/:long', update)
 shapePointRouter.delete('/:id', remove)
 
