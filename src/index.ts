@@ -9,6 +9,7 @@ import morgan from 'morgan'
 import helmet from 'helmet'
 import express from 'express'
 import router from './modules/index'
+import cors from 'cors'
 
 const app = express()
 const knex = Knex(knexConfig)
@@ -18,6 +19,7 @@ Model.knex(knex)
 app.use(morgan('combined'))
 app.use(helmet())
 app.use(express.json())
+app.use(cors({ origin: '*' }))
 app.use('/api', router)
 
 async function main() {
