@@ -36,6 +36,14 @@ export default class StopTime extends Model {
     stopForeignKey() {
       return ['stopId', 'feedId']
     },
+    defaultSelects(builder) {
+      builder.select(
+        'arrivalTime',
+        'departureTime',
+        'stopSequence',
+        'shapeDistTraveled'
+      )
+    },
   }
 
   // https://gtfs.org/reference/static/#stop_timestxt

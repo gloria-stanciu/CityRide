@@ -41,6 +41,9 @@ export default class Trip extends Model {
     shapeForeignKey() {
       return ['shapeId', 'feedId']
     },
+    defaultSelects(builder) {
+      builder.select('id', 'wheelchairAccessible', 'bikesAllowed')
+    },
   }
 
   //https://gtfs.org/reference/static/#tripstxt

@@ -18,6 +18,9 @@ export default class ShapePoint extends Model {
     shapeForeignKey() {
       return ['shapeId', 'feedId']
     },
+    defaultSelects(builder) {
+      builder.select('shapeId', 'lat', 'long')
+    },
   }
 
   static relationMappings = () => ({

@@ -29,6 +29,16 @@ export default class Stop extends Model {
     idPrimaryKey() {
       return ['id', 'feed_id']
     },
+    defaultSelects(builder) {
+      builder.select(
+        'id',
+        'name',
+        'lat',
+        'long',
+        'locationType',
+        'wheelchairBoarding'
+      )
+    },
   }
 
   static jsonSchema = {
