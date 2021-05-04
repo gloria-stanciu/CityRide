@@ -42,7 +42,7 @@ export default class Trip extends Model {
       return ['shapeId', 'feedId']
     },
     defaultSelects(builder) {
-      builder.select('id', 'wheelchairAccessible', 'bikesAllowed')
+      builder.select('id')
     },
   }
 

@@ -1,13 +1,10 @@
 import { Request, Response } from 'express'
 import { Route } from '../../models/index'
 
-async function filterByVehicles(req: Request, res: Response) {
+async function routesByType(req: Request, res: Response) {
   try {
-    const route = await Route.query()
-      .where('type', req.params.type)
-      .withGraphFetched(
-        'trip(defaultSelects).[stopTime(defaultSelects).[stop(defaultSelects)]]'
-      )
+    const route = await Route.query().where('type', req.params.type)
+    // .withGraphFetched('trip(defaultSelects)')
     if (route === undefined)
       return res.status(404).send({ message: 'Row not found' })
     else return res.status(200).send(route)
@@ -17,4 +14,4 @@ async function filterByVehicles(req: Request, res: Response) {
   }
 }
 
-export { filterByVehicles }
+export { routesByType }
