@@ -6,8 +6,8 @@ import Stop from './Stop'
 export default class StopTime extends Model {
   tripId!: string
   feedId!: string
-  arrivalTime: Date | null
-  departureTime: Date | null
+  arrivalTime: string | null
+  departureTime: string | null
   stopId!: string
   stopSequence!: number
   stopHeadsign: string | null

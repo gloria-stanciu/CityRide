@@ -2,6 +2,7 @@ import { Model, Modifiers } from 'objection'
 import StopTime from './StopTime'
 import Transfer from './Transfer'
 import Feed from './Feed'
+import Trip from './Trip'
 
 export default class Stop extends Model {
   id!: string
@@ -22,6 +23,7 @@ export default class Stop extends Model {
   transferFrom?: Transfer
   transferTo?: Transfer
   feed?: Feed
+  trip?: Trip
 
   static tableName = 'stops'
 
@@ -30,14 +32,7 @@ export default class Stop extends Model {
       return ['id', 'feed_id']
     },
     defaultSelects(builder) {
-      builder.select(
-        'id',
-        'name',
-        'lat',
-        'long',
-        'locationType',
-        'wheelchairBoarding'
-      )
+      builder.select('id', 'name', 'stopSequence').orderBy('stopSequence')
     },
   }
 
@@ -99,6 +94,19 @@ export default class Stop extends Model {
       join: {
         from: 'stops.feedId',
         to: 'feed.id',
+      },
+    },
+    trip: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Trip,
+      join: {
+        from: 'stops.id',
+        through: {
+          from: 'stopTimes.stopId',
+          to: 'stopTimes.tripId',
+          extra: ['stopSequence'],
+        },
+        to: 'trips.id',
       },
     },
   })

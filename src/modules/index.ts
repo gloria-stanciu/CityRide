@@ -13,7 +13,6 @@ import calendarDatesRouter from './CalendarDate/calendarDate.routing'
 import stopRouter from './Stop/stop.routing'
 import stopTimeRouter from './StopTime/stopTime.routing'
 import transferRouter from './Transfer/transfer.routing'
-import composedQuery from './ComposedQuery/composedQuery.routing'
 
 import Router from 'express'
 const router = Router()
@@ -33,6 +32,5 @@ router.use('/calendarDates', calendarDatesRouter)
 router.use('/stops', stopRouter)
 router.use('/stopTimes', stopTimeRouter)
 router.use('/transfers', transferRouter)
-router.use('/', composedQuery)
 
 export default router

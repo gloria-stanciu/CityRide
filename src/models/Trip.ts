@@ -5,6 +5,7 @@ import Route from './Route'
 import Service from './Service'
 import Shape from './Shape'
 import StopTime from './StopTime'
+import Stop from './Stop'
 
 export default class Trip extends Model {
   id!: string
@@ -25,6 +26,7 @@ export default class Trip extends Model {
   service?: Service
   shape?: Shape
   stopTime?: StopTime
+  stop?: Stop
 
   static tableName = 'trips'
 
@@ -41,8 +43,19 @@ export default class Trip extends Model {
     shapeForeignKey() {
       return ['shapeId', 'feedId']
     },
-    defaultSelects(builder) {
-      builder.select('id')
+    distinctRoutes(builder) {
+      builder
+        // .select('id', 'shapeId', 'wheelchairAccessible', 'bikesAllowed')
+        .where('directionId', 0)
+        .distinct(
+          'routeId',
+          'directionId',
+          // 'id',
+          // 'shapeId',
+          'wheelchairAccessible',
+          'bikesAllowed'
+        )
+      // .limit(1)
     },
   }
 
@@ -115,6 +128,19 @@ export default class Trip extends Model {
       join: {
         from: ['trips.id', 'trips.feedId'],
         to: ['stopTimes.tripId', 'stopTimes.feedId'],
+      },
+    },
+    stop: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Stop,
+      join: {
+        from: 'trips.id',
+        through: {
+          from: 'stopTimes.tripId',
+          to: 'stopTimes.stopId',
+          extra: ['stopSequence'],
+        },
+        to: 'stops.id',
       },
     },
   })
