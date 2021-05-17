@@ -44,10 +44,9 @@ async function getByShapeId(req: Request, res: Response) {
       .where('shapeId', req.params.shapeId)
       .select('lat', 'long')
     const output = shapePoints.map(function (point) {
-      return Object.keys(point)
-        .map(function (key) {
-          return parseFloat(point[key])
-        })
+      return Object.keys(point).map(function (key) {
+        return parseFloat(point[key])
+      })
     })
     if (shapePoints === undefined)
       return res.status(404).send({ message: 'Rows not found' })
