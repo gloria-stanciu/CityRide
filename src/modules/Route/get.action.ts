@@ -179,11 +179,13 @@ async function getTimetable(req: Request, res: Response) {
         'trips.serviceId',
         'trips.directionId',
         'calendars.startDate',
-        'calendars.endDate'
+        'calendars.endDate',
+        'stops.name'
       )
       .innerJoin('trips', 'stopTimes.tripId', 'trips.id')
       .innerJoin('services', 'trips.serviceId', 'services.id')
       .innerJoin('calendars', 'services.id', 'calendars.serviceId')
+      .innerJoin('stops', 'stopTimes.stopId', 'stops.id')
       .where('trips.routeId', routeId)
       .where('directionId', direction)
       .where(`calendars.${weekDays[currentDay]}`, 1)
