@@ -180,7 +180,9 @@ async function getTimetable(req: Request, res: Response) {
         'trips.directionId',
         'calendars.startDate',
         'calendars.endDate',
-        'stops.name'
+        'stops.name',
+        'stops.lat',
+        'stops.long'
       )
       .innerJoin('trips', 'stopTimes.tripId', 'trips.id')
       .innerJoin('services', 'trips.serviceId', 'services.id')
