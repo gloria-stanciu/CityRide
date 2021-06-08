@@ -1,9 +1,7 @@
-import { compareAsc, getDay, isAfter, set } from 'date-fns'
+import { getDay, isAfter, set } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { Request, Response } from 'express'
-import { raw } from 'objection'
 import { Route, Stop } from '../../models/index'
-import Routes from '../../models/Route'
 
 interface StopRoute {
   stopId: string
@@ -22,27 +20,12 @@ interface StopRoute {
 }
 
 interface Direction {
-  // routes: {
-  // routeId: string
-  // info: {
   shapeId: string
   arrivalTime: string
   departureTime: string
   shortName: string
-  // }[]
-  // }[]
 }
 
-// interface RouteInfo {
-//   // routeId: string
-//   // info: {
-//   shapeId: string
-//   arrivalTime: string
-//   departureTime: string
-//   shortName: string
-//   directionId: 0 | 1
-//   // }[]
-// }
 interface StopsWithRoutes {
   routeId: string
   stopId: string
@@ -58,7 +41,7 @@ interface StopsWithRoutes {
 
 async function getAll(req: Request, res: Response) {
   try {
-    const stops = await Stop.query()
+    const stops = await Stop.query().select('id', 'name', 'lat', 'long')
     return res.status(200).send(stops)
   } catch (err) {
     res.status(500).send(err)
@@ -136,7 +119,6 @@ async function getRoutes(req: Request, res: Response) {
       const times = routes.filter((obj) => obj.routeId === nextRoute)
 
       for (const time of times) {
-        //@ts-ignore
         const [h, m, s] = time.arrivalTime.split(':')
         const arrivalDateTime = set(date, {
           hours: +h,
@@ -145,7 +127,6 @@ async function getRoutes(req: Request, res: Response) {
         })
         if (isAfter(arrivalDateTime, date)) {
           filteredRoutes.push(time)
-          // break
         }
       }
     }
