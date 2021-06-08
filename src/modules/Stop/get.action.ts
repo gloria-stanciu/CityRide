@@ -41,7 +41,10 @@ interface StopsWithRoutes {
 
 async function getAll(req: Request, res: Response) {
   try {
-    const stops = await Stop.query().select('id', 'name', 'lat', 'long')
+    const stopName = req.query.name
+    const stops = await Stop.query()
+      .where('name', 'like', `%${stopName}%`)
+      .select('id', 'name', 'lat', 'long')
     return res.status(200).send(stops)
   } catch (err) {
     res.status(500).send(err)
