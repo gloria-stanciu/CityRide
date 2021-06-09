@@ -17,6 +17,7 @@ interface StopRoute {
   shortName: string
   startDate: string
   endDate: string
+  stopSequence: number
 }
 
 interface Direction {
@@ -40,6 +41,15 @@ interface StopsWithRoutes {
 }
 
 async function getAll(req: Request, res: Response) {
+  try {
+    const stops = await Stop.query()
+    return res.status(200).send(stops)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
+async function getFilteredStops(req: Request, res: Response) {
   try {
     const stopName = req.query.name
     const stops = await Stop.query()
@@ -179,7 +189,6 @@ async function getRoutes(req: Request, res: Response) {
             inbound: [],
             outbound: [],
           })
-          console.log(result[nr - 1])
           result[nr - 1][direction].push(thisRoute)
         }
         return result
@@ -194,4 +203,4 @@ async function getRoutes(req: Request, res: Response) {
   }
 }
 
-export { getAll, getById, getRoutes }
+export { getAll, getById, getRoutes, getFilteredStops }
