@@ -42,7 +42,7 @@ async function getByShapeId(req: Request, res: Response) {
   try {
     const shapePoints = await ShapePoint.query()
       .where('shapeId', req.params.shapeId)
-      .select('long', 'lat')
+      .select('lat', 'long')
     const output = shapePoints.map(function (point) {
       return Object.keys(point).map(function (key) {
         return parseFloat(point[key])
