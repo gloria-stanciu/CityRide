@@ -51,10 +51,12 @@ async function getAll(req: Request, res: Response) {
 
 async function getFilteredStops(req: Request, res: Response) {
   try {
-    const stopName = req.query.name
+    const stopName: string = req.query.name.toString().toLowerCase()
+    console.log('stopName', stopName)
     const stops = await Stop.query()
-      .where('name', 'like', `%${stopName}%`)
+      .whereRaw('LOWER(name) LIKE ?', [`%${stopName}%`])
       .select('id', 'name', 'lat', 'long')
+    console.log('stops', stops)
     return res.status(200).send(stops)
   } catch (err) {
     res.status(500).send(err)
